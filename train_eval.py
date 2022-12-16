@@ -71,7 +71,7 @@ from copy import deepcopy
 
 
 def k_fold(dataset, folds, epoch_select, dataset_name, n_percents=1):
-    n_splits = folds - 2
+    # n_splits = folds - 2
 
     if n_percents == 10:
         all_indices = torch.arange(0,len(dataset),1, dtype=torch.long)
@@ -92,7 +92,7 @@ def k_fold(dataset, folds, epoch_select, dataset_name, n_percents=1):
     if epoch_select == 'test_max':
         val_indices = [test_indices[i] for i in range(folds)]
         save_val = [save_test[i] for i in range(folds)]
-        n_splits += 1
+        # n_splits += 1
     else:
         val_indices = [test_indices[i - 1] for i in range(folds)]
         save_val = [save_test[i - 1] for i in range(folds)]
