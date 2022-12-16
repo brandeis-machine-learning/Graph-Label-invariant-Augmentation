@@ -118,10 +118,10 @@ def k_fold(dataset, folds, epoch_select, dataset_name, n_percents=1):
         else:
             save_train.append(cur_idx)
 
-        train_mask = torch.ones(len(dataset), dtype=torch.uint8)
+        # train_mask = torch.ones(len(dataset), dtype=torch.uint8)
         train_mask[train_indices[i].long()] = 0
         idx_train_unlabel = train_mask.nonzero(as_tuple=False).view(-1)
-        train_indices_unlabel.append(idx_train_unlabel)
+        train_indices_unlabel.append(idx_train_unlabel) # idx_train_all, idx_train_unlabel
         cur_idx = list(idx_train_unlabel.cpu().detach().numpy())
         if i > 0 and len(cur_idx) < len(save_train_unlabel[0]):
             save_train_unlabel.append(cur_idx + [cur_idx[-1]])
@@ -293,12 +293,12 @@ def cross_validation_with_label(dataset,
         train_dataset = dataset[train_idx]
         test_dataset = dataset[test_idx]
         val_dataset = dataset[val_idx]
-        # train_dataset_unlabel = dataset[train_idx_unlabel]
+        train_dataset_unlabel = dataset[train_idx_unlabel]
 
         train_loader = DataLoader(train_dataset, batch_size, shuffle=False)
         val_loader = DataLoader(val_dataset, batch_size, shuffle=False)
         test_loader = DataLoader(test_dataset, batch_size, shuffle=False)
-        # train_loader_unlabel = DataLoader(train_dataset_unlabel, batch_size, shuffle=True)
+        train_loader_unlabel = DataLoader(train_dataset_unlabel, batch_size, shuffle=True)
 
 
         dataset.aug = "none"
@@ -314,7 +314,7 @@ def cross_validation_with_label(dataset,
         for epoch in range(1, epochs+1):
 
             train_loss = train(
-                model, optimizer, train_dataset, device, batch_size, eta)
+                model, optimizer, train_dataset_unlabel, device, batch_size, eta)
 
             train_label_loss, train_acc = train_label(
                 model, optimizer_label, train_dataset, device, batch_size, eta)
